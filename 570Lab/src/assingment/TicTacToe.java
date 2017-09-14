@@ -1,6 +1,5 @@
 package assingment;
 
-
 import java.io.*;
 import java.util.*;
 
@@ -19,7 +18,7 @@ public class TicTacToe implements Serializable {
 	private int player_current;
 	private static int win_count;
 	private static int row_origin, column_origin;
-//	private static final String fileName_defult = "TicTacToe.txt";
+	// private static final String fileName_defult = "TicTacToe.txt";
 
 	private static BufferedReader bReader;
 	private byte check_win = TicTacToe.NO_WIN;
@@ -91,7 +90,11 @@ public class TicTacToe implements Serializable {
 							loop_signal = true;
 							System.out.print("How many players are playing(Max26)?\t");
 							player_numNum = Byte.parseByte(bReader.readLine().trim());
-							loop_signal = false;
+							if (player_numNum < 1 || player_numNum > 26) {
+								System.out.println("Player number is out of range, Please Retry!");
+								continue;
+							} else
+								loop_signal = false;
 						} catch (Exception e) {
 							System.out.println("Input ERROR, Please Retry!");
 							loop_signal = true;
@@ -102,7 +105,11 @@ public class TicTacToe implements Serializable {
 							loop_signal = true;
 							System.out.print("How large the board should be(Max999)?\t");
 							boardSize = Integer.parseInt(bReader.readLine().trim());
-							loop_signal = false;
+							if (boardSize < 1 || boardSize > 999) {
+								System.out.println("Board size is out of range, Please Retry!");
+								continue;
+							} else
+								loop_signal = false;
 						} catch (Exception e) {
 							System.out.println("Input ERROR, Please Retry!");
 							loop_signal = true;
@@ -114,7 +121,10 @@ public class TicTacToe implements Serializable {
 							System.out.print("What the win sequence count should be?\t");
 							winSequence = Integer.parseInt(bReader.readLine().trim());
 
-							if (winSequence > boardSize || player_numNum * winSequence >= boardSize * boardSize) {
+							if (winSequence < 0 || winSequence > boardSize) {
+								System.out.println("WinSequence is out of range, please reset!");
+								continue;
+							} else if (player_numNum * (winSequence - 1) + 2 >= boardSize * boardSize) {
 								System.out.println("There is no win chance, please reset!");
 								continue;
 							}
@@ -144,28 +154,36 @@ public class TicTacToe implements Serializable {
 		this.win_seq = winSequence;
 		status = new int[boardSize][boardSize];
 		this.player_current = 1;
-		this.round_count=boardSize*boardSize;
+		this.round_count = boardSize * boardSize;
 	}
 
-//	public TicTacToe(byte player_numNum, int boardSize, int winSequence, int current_player, int[][] status) {
-//		this(player_numNum, boardSize, winSequence);
-//		this.player_current = current_player;
-//		this.status = status;
-//	}
+	// public TicTacToe(byte player_numNum, int boardSize, int winSequence, int
+	// current_player, int[][] status) {
+	// this(player_numNum, boardSize, winSequence);
+	// this.player_current = current_player;
+	// this.status = status;
+	// }
 
 	public void show() {// Show Whole Board
-		System.out.print(" ");///3 space
+		System.out.print("  ");/// 3 space
 		for (int i = 1; i <= size; i++) {// column number
-			System.out.print("   " + i);// 3space
+			int digit = i, t_space = 3;// 999+space,99+2space,9+3space
+			while (t_space != 0) {
+				if ((digit = digit / 10) == 0) {
+					System.out.print(" ");
+				}
+				t_space--;
+			}
+			System.out.print(i);// 3space
 		}
 		System.out.println();
-		for (int i = 97; i < size; i++) {// each MarkRow+Grid
-			for (int j =0; j < size; j++) {// Row of Boxes
+		for (int i = 0; i < size; i++) {// each MarkRow+Grid
+			for (int j = 0; j < size; j++) {// Row of Boxes
 				if (j == 0) {// special first box for each row
-					System.out.print((i+1));
-					int digit=(i+1),t_space=3;//999+space,99+2space,9+3space
-					while (t_space!=0) {
-						if((digit=digit/10)==0){
+					System.out.print((i + 1));
+					int digit = (i + 1), t_space = 3;// 999+space,99+2space,9+3space
+					while (t_space != 0) {
+						if ((digit = digit / 10) == 0) {
 							System.out.print(" ");
 						}
 						t_space--;
@@ -189,7 +207,6 @@ public class TicTacToe implements Serializable {
 		}
 	}
 
-	/** @return 0--exit;-10--retry;-1--NO_WIN;1-26--winner£»-2--Fair */
 	public int input() {// input column
 		System.out.print("Current Player:" + player_current
 				+ "\nPlease Enter Row and Column(Seperate by Space) or Press Q to Save&Exit: ");
@@ -225,7 +242,7 @@ public class TicTacToe implements Serializable {
 				case WRONG:
 					return TicTacToe.WRONG;
 				default:
-					
+
 					return player_current;
 				}
 			}
@@ -313,7 +330,7 @@ public class TicTacToe implements Serializable {
 			}
 		} else {
 			if (direction + 4 >= 8) {
-				win_count=1;
+				win_count = 1;
 				return NO_WIN;
 			} else {
 				return check(direction + 4, row_origin, column_origin);
@@ -339,23 +356,23 @@ public class TicTacToe implements Serializable {
 				oStream.flush();
 				oStream.close();
 				fStream.close();
-				inputFail=false;
+				inputFail = false;
 				System.out.println("Saved successfully! Thank you for game.");
 			} catch (FileNotFoundException e) {
 				System.out.println("File cannot create or access! Please Retry!");
-				inputFail=true;
-			}catch (IOException e) {
-				if(fileName==""){
+				inputFail = true;
+			} catch (IOException e) {
+				if (fileName == "") {
 					System.out.println("Input file name failed! Please Retry!");
-					inputFail=true;
-				}else{
+					inputFail = true;
+				} else {
 					System.out.println("Save game failed! Program or system error! Game will exit without save!");
 					System.exit(-1);
 				}
 			}
 		} while (inputFail);
 	}
-	
+
 	public static TicTacToe load() {
 		String fileName = "";
 		boolean inputFail = true;
@@ -365,22 +382,22 @@ public class TicTacToe implements Serializable {
 				fileName = bReader.readLine();
 				FileInputStream fStream = new FileInputStream(fileName);
 				ObjectInputStream iStream = new ObjectInputStream(fStream);
-				TicTacToe current_game=(TicTacToe) iStream.readObject();
+				TicTacToe current_game = (TicTacToe) iStream.readObject();
 				iStream.close();
 				fStream.close();
 				return current_game;
 			} catch (FileNotFoundException e) {
 				System.out.println("File cannot create or access! Please Retry!");
-				inputFail=true;
-			}catch (IOException e) {
-				if(fileName==""){
+				inputFail = true;
+			} catch (IOException e) {
+				if (fileName == "") {
 					System.out.println("Input file name failed! Please Retry!");
-					inputFail=true;
-				}else{
+					inputFail = true;
+				} else {
 					System.out.println("Load game failed! Program or system error! Game will exit without load!");
 					System.exit(-1);
 				}
-			}catch (Exception e) {
+			} catch (Exception e) {
 				System.out.println("Load game failed! Program or system error2! Game will exit while trying load!");
 				System.exit(-1);
 			}
