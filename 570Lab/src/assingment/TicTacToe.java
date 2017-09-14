@@ -124,7 +124,7 @@ public class TicTacToe implements Serializable {
 							if (winSequence < 0 || winSequence > boardSize) {
 								System.out.println("WinSequence is out of range, please reset!");
 								continue;
-							} else if (player_numNum * (winSequence - 1) + 2 >= boardSize * boardSize) {
+							} else if (player_numNum * (winSequence - 1) + 1 > boardSize * boardSize) {
 								System.out.println("There is no win chance, please reset!");
 								continue;
 							}
@@ -220,7 +220,7 @@ public class TicTacToe implements Serializable {
 			if (stringTokenizer.countTokens() == 2) {
 				int row = Integer.parseInt(stringTokenizer.nextToken()) - 1;
 				int column = Integer.parseInt(stringTokenizer.nextToken()) - 1;
-				if (row > size || column > size || row < 0 || column < 0) {
+				if (row >= size || column >= size || row < 0 || column < 0) {
 					System.out.println("Entered row or column number out of board size! Please Retry!");
 					return TicTacToe.WRONG;
 				}
@@ -256,11 +256,6 @@ public class TicTacToe implements Serializable {
 		return TicTacToe.WRONG;
 	}
 
-	/**
-	 * @param row
-	 *            previous checked point
-	 * @return NO_WIN,FAIR,winner number
-	 */
 	public int check(int direction, int row, int column) {// 0-7=8DIRECTIONS,-1=ALL
 		int row_current = -1, column_current = -1;
 		switch (direction) {
